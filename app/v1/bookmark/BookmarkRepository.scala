@@ -15,6 +15,7 @@ class BookmarkExecutionContext @Inject()(actorSystem: ActorSystem)
 
 trait BookmarkRepository {
   def list()(implicit mc: MarkerContext): Future[Iterable[BookmarkData]]
+  def add(br: BookmarkResource)(implicit mc: MarkerContext): Future[BookmarkData]
 }
 
 @Singleton
@@ -23,7 +24,7 @@ class BookmarkRepositoryImpl @Inject()()(implicit ec: BookmarkExecutionContext)
 
   private val logger = Logger(this.getClass)
 
-  private val bookmarks = List(
+  private var bookmarks = List(
     BookmarkData(1, "title1", "http://localhost:9000/v1/bookmarks"),
     BookmarkData(2, "title1", "http://localhost:9000/v1/bookmarks"),
     BookmarkData(3, "title1", "http://localhost:9000/v1/bookmarks"),
@@ -34,6 +35,14 @@ class BookmarkRepositoryImpl @Inject()()(implicit ec: BookmarkExecutionContext)
     Future {
       logger.trace(s"list: ")
       bookmarks
+    }
+  }
+
+  override def add(br: BookmarkResource)(implicit mc: MarkerContext): Future[BookmarkData] = {
+    Future {
+      val data = BookmarkData(br.id, br.title, br.url)
+      bookmarks :+= data
+      data
     }
   }
 }

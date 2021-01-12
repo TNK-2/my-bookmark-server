@@ -22,6 +22,12 @@ class BookmarkResourceHandler @Inject()(
     }
   }
 
+  def add(br: BookmarkResource)(implicit mc: MarkerContext): Future[BookmarkResource] = {
+    bookmarkRepository.add(br).map { bookmark =>
+      this.createBookmarkResource(bookmark)
+    }
+  }
+
   private def createBookmarkResource(b: BookmarkData): BookmarkResource = {
     BookmarkResource(id = b.id, title = b.title, url = b.url)
   }
