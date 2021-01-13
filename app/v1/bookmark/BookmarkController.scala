@@ -62,11 +62,6 @@ class BookmarkController @Inject()(bcc: BookmarkControllerComponents)(implicit e
 
   def add: Action[AnyContent] = BookmarkAction.async { implicit request =>
     logger.trace("BookmarkController::add")
-    this.processJsonPost()
-  }
-
-  private def processJsonPost[A]()(
-      implicit request: BookmarkRequest[A]): Future[Result] = {
     def failure(badForm: Form[BookmarkFormInput]) = {
       Future.successful(BadRequest(badForm.errorsAsJson))
     }
@@ -76,6 +71,11 @@ class BookmarkController @Inject()(bcc: BookmarkControllerComponents)(implicit e
       }
     }
     form.bindFromRequest().fold(failure, success)
+  }
+
+  def delete(id: String): Action[AnyContent] = BookmarkAction.async { implicit request =>
+    logger.trace("BookmarkController::delete id: %id".format(id))
+    bookmarkResourceHandler.delete(id = id).map { _ => Ok("delete success")}
   }
 
   private def inputToResource(b: BookmarkFormInput): BookmarkResource = {

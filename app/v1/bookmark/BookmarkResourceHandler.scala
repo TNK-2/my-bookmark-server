@@ -28,6 +28,9 @@ class BookmarkResourceHandler @Inject()(
     }
   }
 
+  def delete(id: String)(implicit mc: MarkerContext): Future[Unit] = bookmarkRepository.delete(id = id.toInt)
+
+
   private def createBookmarkResource(b: BookmarkData): BookmarkResource = {
     BookmarkResource(id = b.id, title = b.title, url = b.url)
   }

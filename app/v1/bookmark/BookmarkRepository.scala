@@ -16,6 +16,7 @@ class BookmarkExecutionContext @Inject()(actorSystem: ActorSystem)
 trait BookmarkRepository {
   def list()(implicit mc: MarkerContext): Future[Iterable[BookmarkData]]
   def add(br: BookmarkResource)(implicit mc: MarkerContext): Future[BookmarkData]
+  def delete(id: Int)(implicit mc: MarkerContext): Future[Unit]
 }
 
 @Singleton
@@ -45,4 +46,9 @@ class BookmarkRepositoryImpl @Inject()()(implicit ec: BookmarkExecutionContext)
       data
     }
   }
+
+  override def delete(id: Int)(implicit mc: MarkerContext): Future[Unit] = Future {
+    bookmarks = bookmarks.filterNot(_.id == id)
+  }
+
 }

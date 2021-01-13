@@ -10,5 +10,6 @@ class BookmarkRouter @Inject()(controller: BookmarkController) extends SimpleRou
   override def routes: Routes = {
     case GET(p"/") => controller.index
     case POST(p"/") => controller.add
+    case DELETE(p"/$id") => controller.delete(id)
   }
 }
