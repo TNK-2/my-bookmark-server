@@ -60,6 +60,13 @@ class BookmarkController @Inject()(bcc: BookmarkControllerComponents)(implicit e
     }
   }
 
+  def show(id: String): Action[AnyContent] = BookmarkAction.async { implicit request =>
+    logger.trace("BookmarkController::show")
+    bookmarkResourceHandler.lookup(id).map { bookmark =>
+      Ok(Json.toJson(bookmark))
+    }
+  }
+
   def add: Action[AnyContent] = BookmarkAction.async { implicit request =>
     logger.trace("BookmarkController::add")
     def failure(badForm: Form[BookmarkFormInput]) = {

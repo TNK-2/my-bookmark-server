@@ -15,6 +15,7 @@ class BookmarkExecutionContext @Inject()(actorSystem: ActorSystem)
 
 trait BookmarkRepository {
   def list()(implicit mc: MarkerContext): Future[Iterable[BookmarkData]]
+  def get(id: String)(implicit mc: MarkerContext): Future[Option[BookmarkData]]
   def add(br: BookmarkResource)(implicit mc: MarkerContext): Future[BookmarkData]
   def delete(id: Int)(implicit mc: MarkerContext): Future[Unit]
 }
@@ -29,13 +30,20 @@ class BookmarkRepositoryImpl @Inject()()(implicit ec: BookmarkExecutionContext)
     BookmarkData(1, "title1", "http://localhost:9000/v1/bookmarks"),
     BookmarkData(2, "title1", "http://localhost:9000/v1/bookmarks"),
     BookmarkData(3, "title1", "http://localhost:9000/v1/bookmarks"),
-    BookmarkData(4, "title1", "http://localhost:9000/v1/bookmarks"),
+    BookmarkData(4, "title1", "http://localhost:9000/v1/bookmarks")
   )
 
   override def list()(implicit mc: MarkerContext): Future[Iterable[BookmarkData]] = {
     Future {
       logger.trace(s"list: ")
       bookmarks
+    }
+  }
+
+  override def get(id: String)(implicit mc: MarkerContext): Future[Option[BookmarkData]] = {
+    Future {
+      logger.trace(s"get: id = $id")
+      bookmarks.find(bookmark => bookmark.id == id.toInt)
     }
   }
 

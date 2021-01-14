@@ -22,6 +22,15 @@ class BookmarkResourceHandler @Inject()(
     }
   }
 
+  def lookup(id: String)(implicit mc: MarkerContext): Future[Option[BookmarkResource]] = {
+    val bookMarkFuture = bookmarkRepository.get(id)
+    bookMarkFuture.map { maybeBookmarkData =>
+      maybeBookmarkData.map { bookmarkData =>
+        this.createBookmarkResource(bookmarkData)
+      }
+    }
+  }
+
   def add(br: BookmarkResource)(implicit mc: MarkerContext): Future[BookmarkResource] = {
     bookmarkRepository.add(br).map { bookmark =>
       this.createBookmarkResource(bookmark)
